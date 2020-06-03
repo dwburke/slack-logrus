@@ -54,6 +54,7 @@ type Hook struct {
 	IconURL      string
 	Username     string
 	Options      map[string]interface{}
+	Synchronous  bool
 }
 
 // Implement Hook methods
@@ -113,7 +114,11 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 	}
 	atx.Color = color
 	// Execute concurrently
-	go text.Send(c)
+	if h.Synchronous {
+		text.Send(c)
+	} else {
+		go text.Send(c)
+	}
 	return nil
 }
 
